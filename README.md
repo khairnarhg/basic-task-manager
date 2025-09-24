@@ -7,9 +7,9 @@ A full-stack task management system with **JWT-based authentication**, user-spec
 ## 🚀 Tech Stack
 
 - **Backend**: [NestJS](https://nestjs.com/), [TypeORM](https://typeorm.io/), [JWT](https://jwt.io/), [Bcrypt](https://www.npmjs.com/package/bcrypt)  
-- **Frontend**: React (or your chosen framework)  
-- **Database**: PostgreSQL (can adapt to MySQL/SQLite)  
-- **Tools**: ESLint, Prettier, Nodemon  
+- **Frontend**: React + Vite
+- **Database**: PostgreSQL 
+- **Tools**: ESLint, Prettier  
 
 ---
 
