@@ -7,16 +7,16 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // NEW: indicates if auth is being initialized
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Restore user from localStorage on mount
+  
     const storedUser = localStorage.getItem('task-manager-user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    setLoading(false); // auth initialization finished
+    setLoading(false); 
   }, []);
 
   const login = async (email, password) => {

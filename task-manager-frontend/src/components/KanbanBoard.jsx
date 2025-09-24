@@ -16,14 +16,14 @@ const KanbanBoard = ({ tasks, onEditTask, onDeleteTask, onUpdateStatus }) => {
     }
   };
 
-  const statusToColumnId = (status) => {
-    switch (status) {
-      case 0: return 'todo';
-      case 1: return 'in-progress';
-      case 2: return 'done';
-      default: return 'todo';
-    }
-  };
+  // const statusToColumnId = (status) => {
+  //   switch (status) {
+  //     case 0: return 'todo';
+  //     case 1: return 'in-progress';
+  //     case 2: return 'done';
+  //     default: return 'todo';
+  //   }
+  // };
 
   const columns = useMemo(() => ({
     todo: { name: 'To Do', tasks: tasks?.filter(t => t.status === 0) || [] },
@@ -45,7 +45,7 @@ const KanbanBoard = ({ tasks, onEditTask, onDeleteTask, onUpdateStatus }) => {
     }
   };
 
-  // Return null if tasks is not loaded yet
+
   if (!tasks || !Array.isArray(tasks)) {
     return <div>Loading...</div>;
   }
@@ -65,14 +65,18 @@ const KanbanBoard = ({ tasks, onEditTask, onDeleteTask, onUpdateStatus }) => {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`bg-gray-800 p-4 rounded-lg shadow-inner transition-colors min-h-[200px] ${
+                className={`flex flex-col bg-gray-800 p-4 rounded-lg shadow-inner transition-colors min-h-[200px] ${
                   snapshot.isDraggingOver ? 'bg-gray-700' : ''
                 }`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
               >
                 <h3 className="text-lg font-semibold mb-4 border-b-2 border-gray-600 pb-2">
                   {column.name}
                 </h3>
-                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-gray-700 hover:scrollbar-thumb-indigo-500">
+                <div className="flex flex-col space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-gray-700 hover:scrollbar-thumb-indigo-500">
                   {column.tasks.map((task, index) => (
                     <Draggable 
                       key={`${task.id}-${columnId}`} 
@@ -85,8 +89,9 @@ const KanbanBoard = ({ tasks, onEditTask, onDeleteTask, onUpdateStatus }) => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          style={provided.draggableProps.style}
                           className={`transition-transform ${
-                            snapshot.isDragging ? 'scale-105 shadow-lg' : ''
+                            snapshot.isDragging ? 'scale-105 shadow-lg rotate-3' : ''
                           }`}
                         >
                           <TaskCard task={task} onEdit={onEditTask} onDelete={onDeleteTask} />

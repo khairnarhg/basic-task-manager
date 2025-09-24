@@ -57,7 +57,7 @@ const DashboardPage = () => {
     const token = localStorage.getItem("task-manager-token");
     try {
       if (task.id) {
-        // Update existing task
+   
         await axios.put(`http://localhost:3000/api/tasks/${task.id}`, {
           tname: task.title,
           tdesc: task.description,
@@ -68,7 +68,7 @@ const DashboardPage = () => {
         setTasks(prev => prev.map(t => t.id === task.id ? task : t));
         toast.success("Task updated successfully!");
       } else {
-        // Create new task
+        
         const response = await axios.post("http://localhost:3000/api/tasks", {
           tname: task.title,
           tdesc: task.description,
@@ -96,7 +96,7 @@ const DashboardPage = () => {
     }
   };
 
-  // Delete task
+
   const handleDeleteTask = async (taskId) => {
     const token = localStorage.getItem("task-manager-token");
     try {
@@ -111,7 +111,7 @@ const DashboardPage = () => {
     }
   };
 
-  // Update task status (on drag & drop)
+ 
   const handleUpdateTaskStatus = async (taskId, newStatus) => {
     const token = localStorage.getItem("task-manager-token");
     try {

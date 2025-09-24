@@ -6,10 +6,8 @@ async function bootstrap() {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
 
-  // Set global prefix for APIs
   app.setGlobalPrefix('api');
 
-  // Enable CORS for all origins
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

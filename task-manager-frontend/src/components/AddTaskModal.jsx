@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import axios from 'axios';
+
 
 
 const AddTaskModal = ({ isOpen, onClose, onSave, taskToEdit }) => {
@@ -23,53 +23,6 @@ const AddTaskModal = ({ isOpen, onClose, onSave, taskToEdit }) => {
       setDueDate('');
     }
   }, [taskToEdit, isOpen]);
-
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!title || !dueDate) {
-  //     toast.error("Title and Due Date are required.");
-  //     return;
-  //   }
-
-
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0); 
-  //   const due = new Date(dueDate);
-
-  //   if (due < today) {
-  //     toast.error("Due Date must be today or in the future.");
-  //     return;
-  //   }
-
-  //   try {
-
-  //     const token = localStorage.getItem("task-manager-token");
-
-  //     const response = await axios.post(
-  //       "http://localhost:3000/api/tasks",
-  //       {
-  //         tname: title,
-  //         tdesc: description,
-  //         status,
-  //         dueDate,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     toast.success("Task saved successfully!");
-
-  //     onClose();
-  //   } catch (error) {
-  //     console.error("Error saving task:", error);
-  //     toast.error(error.response?.data?.message || "Failed to save task.");
-  //   }
-  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();

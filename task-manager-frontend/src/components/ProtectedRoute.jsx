@@ -6,8 +6,8 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    // While auth state is being initialized, don't redirect yet
-    return <div>Loading...</div>; // or a spinner
+  
+    return <div>Loading...</div>;
   }
 
   if (!user) {
