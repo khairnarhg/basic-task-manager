@@ -42,7 +42,7 @@ Backend will be available at:
 
 ```bash
 # Navigate to frontend
-cd frontend
+cd task-manager-frontend
 
 # Install dependencies
 npm install
