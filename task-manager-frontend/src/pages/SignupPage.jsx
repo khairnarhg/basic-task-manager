@@ -10,19 +10,26 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const { signup } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !email || !password || !confirmPassword) {
       return toast.error('Please fill in all fields.');
     }
+
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(email)) {
+        return toast.error('Please enter a valid email address.');
+    }
+
+    
     if (password !== confirmPassword) {
       return toast.error('Passwords do not match.');
     }
-    const success = signup(name, email, password);
+    const success = await signup(name, email, password);
     if(success) {
       toast.success('Account created successfully!');
     } else {
-      toast.error('An account with this email already exists.');
+      toast.error('Some error ocurred');
     }
   };
 

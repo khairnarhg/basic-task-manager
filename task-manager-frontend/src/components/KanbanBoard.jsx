@@ -1,31 +1,133 @@
-import React from 'react';
+// import React, { useEffect, useMemo } from 'react';
+// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+// import TaskCard from './TaskCard';
+
+// const KanbanBoard = ({ tasks, onEditTask, onDeleteTask, onUpdateStatus }) => {
+//   useEffect(() => {
+//     console.log("tasks:", tasks);
+//   }, [tasks]);
+
+ 
+//   const columnIdToStatus = (id) => {
+//     switch (id) {
+//       case 'todo': return 0;
+//       case 'in-progress': return 1;
+//       case 'done': return 2;
+//       default: return 0;
+//     }
+//   };
+
+
+//   const statusToColumnId = (status) => {
+//     switch (status) {
+//       case 0: return 'todo';
+//       case 1: return 'in-progress';
+//       case 2: return 'done';
+//       default: return 'todo';
+//     }
+//   };
+
+  
+//   const columns = useMemo(() => ({
+//     todo: { name: 'To Do', tasks: tasks?.filter(t => t.status === 0) || [] },
+//     'in-progress': { name: 'In Progress', tasks: tasks?.filter(t => t.status === 1) || [] },
+//     done: { name: 'Done', tasks: tasks?.filter(t => t.status === 2) || [] },
+//   }), [tasks]);
+
+//   const onDragEnd = (result) => {
+//     const { source, destination, draggableId } = result;
+
+//     if (!destination) return;
+//     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+//     const taskId = Number(draggableId);
+//     const newStatus = columnIdToStatus(destination.droppableId);
+
+  
+//     if (onUpdateStatus) {
+//       onUpdateStatus(taskId, newStatus);
+//     }
+//   };
+
+//   return (
+//     <DragDropContext onDragEnd={onDragEnd}>
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//         {Object.entries(columns).map(([columnId, column]) => (
+//           <Droppable droppableId={columnId} key={columnId}>
+//             {(provided, snapshot) => (
+//               <div
+//                 ref={provided.innerRef}
+//                 {...provided.droppableProps}
+//                 className={`bg-gray-800 p-4 rounded-lg shadow-inner transition-colors ${
+//                   snapshot.isDraggingOver ? 'bg-gray-700' : ''
+//                 }`}
+//               >
+//                 <h3 className="text-lg font-semibold mb-4 border-b-2 border-gray-600 pb-2">{column.name}</h3>
+//                 <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-gray-700 hover:scrollbar-thumb-indigo-500">
+//                   {column.tasks.map((task, index) => (
+//                     <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
+//                       {(provided, snapshot) => (
+//                         <div
+//                           ref={provided.innerRef}
+//                           {...provided.draggableProps}
+//                           {...provided.dragHandleProps}
+//                           className={`transition-transform ${
+//                             snapshot.isDragging ? 'scale-105 shadow-lg' : ''
+//                           }`}
+//                         >
+//                           <TaskCard task={task} onEdit={onEditTask} onDelete={onDeleteTask} />
+//                         </div>
+//                       )}
+//                     </Draggable>
+//                   ))}
+//                   {provided.placeholder}
+//                 </div>
+//               </div>
+//             )}
+//           </Droppable>
+//         ))}
+//       </div>
+//     </DragDropContext>
+//   );
+// };
+
+// export default KanbanBoard;
+
+import React, { useEffect, useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import TaskCard from './TaskCard';
 
-const KanbanBoard = ({ tasks, setTasks, onEditTask, onDeleteTask }) => {
+const KanbanBoard = ({ tasks, onEditTask, onDeleteTask, onUpdateStatus }) => {
+  useEffect(() => {
+    console.log('tasks:', tasks);
+  }, [tasks]);
+
+  const columnIdToStatus = (id) => {
+    switch (id) {
+      case 'todo': return 0;
+      case 'in-progress': return 1;
+      case 'done': return 2;
+      default: return 0;
+    }
+  };
+
+  const columns = useMemo(() => ({
+    todo: { name: 'To Do', tasks: tasks?.filter(t => t.status === 0) || [] },
+    'in-progress': { name: 'In Progress', tasks: tasks?.filter(t => t.status === 1) || [] },
+    done: { name: 'Done', tasks: tasks?.filter(t => t.status === 2) || [] },
+  }), [tasks]);
+
   const onDragEnd = (result) => {
     const { source, destination, draggableId } = result;
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    if (!destination) {
-      return;
+    const taskId = Number(draggableId);
+    const newStatus = columnIdToStatus(destination.droppableId);
+
+    if (onUpdateStatus) {
+      onUpdateStatus(taskId, newStatus);
     }
-
-    if (source.droppableId === destination.droppableId && source.index === destination.index) {
-      return;
-    }
-
-    const updatedTasks = tasks.map(task => 
-        task.id.toString() === draggableId 
-            ? { ...task, status: destination.droppableId } 
-            : task
-    );
-    setTasks(updatedTasks);
-  };
-  
-  const columns = {
-    'todo': { name: 'To Do', tasks: tasks.filter(t => t.status === 'todo') },
-    'in-progress': { name: 'In Progress', tasks: tasks.filter(t => t.status === 'in-progress') },
-    'done': { name: 'Done', tasks: tasks.filter(t => t.status === 'done') },
   };
 
   return (
@@ -37,10 +139,12 @@ const KanbanBoard = ({ tasks, setTasks, onEditTask, onDeleteTask }) => {
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`bg-gray-800 p-4 rounded-lg shadow-inner ${snapshot.isDraggingOver ? 'bg-gray-700' : ''}`}
+                className={`bg-gray-800 p-4 rounded-lg shadow-inner transition-colors ${snapshot.isDraggingOver ? 'bg-gray-700' : ''}`}
               >
                 <h3 className="text-lg font-semibold mb-4 border-b-2 border-gray-600 pb-2">{column.name}</h3>
-                <div className="space-y-4 min-h-[400px]">
+                
+                {/* Scrollable container with padding */}
+                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-600 scrollbar-track-gray-700 hover:scrollbar-thumb-indigo-500">
                   {column.tasks.map((task, index) => (
                     <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
                       {(provided, snapshot) => (
@@ -48,13 +152,14 @@ const KanbanBoard = ({ tasks, setTasks, onEditTask, onDeleteTask }) => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
+                          className={`transition-transform ${snapshot.isDragging ? 'scale-105 shadow-lg' : ''}`}
                         >
                           <TaskCard task={task} onEdit={onEditTask} onDelete={onDeleteTask} />
                         </div>
                       )}
                     </Draggable>
                   ))}
-                  {provided.placeholder}
+                  {provided.placeholder} {/* MUST be inside scrollable div */}
                 </div>
               </div>
             )}
@@ -66,3 +171,4 @@ const KanbanBoard = ({ tasks, setTasks, onEditTask, onDeleteTask }) => {
 };
 
 export default KanbanBoard;
+

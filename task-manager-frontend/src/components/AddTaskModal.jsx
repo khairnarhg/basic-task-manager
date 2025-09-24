@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
+
 
 const AddTaskModal = ({ isOpen, onClose, onSave, taskToEdit }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('todo');
+  const [status, setStatus] = useState(0);
   const [dueDate, setDueDate] = useState('');
 
   useEffect(() => {
@@ -17,16 +19,70 @@ const AddTaskModal = ({ isOpen, onClose, onSave, taskToEdit }) => {
   
       setTitle('');
       setDescription('');
-      setStatus('todo');
+      setStatus(0);
       setDueDate('');
     }
   }, [taskToEdit, isOpen]);
 
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!title || !dueDate) {
+  //     toast.error("Title and Due Date are required.");
+  //     return;
+  //   }
+
+
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0); 
+  //   const due = new Date(dueDate);
+
+  //   if (due < today) {
+  //     toast.error("Due Date must be today or in the future.");
+  //     return;
+  //   }
+
+  //   try {
+
+  //     const token = localStorage.getItem("task-manager-token");
+
+  //     const response = await axios.post(
+  //       "http://localhost:3000/api/tasks",
+  //       {
+  //         tname: title,
+  //         tdesc: description,
+  //         status,
+  //         dueDate,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     toast.success("Task saved successfully!");
+
+  //     onClose();
+  //   } catch (error) {
+  //     console.error("Error saving task:", error);
+  //     toast.error(error.response?.data?.message || "Failed to save task.");
+  //   }
+  // };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title || !dueDate) {
-        toast.error('Title and Due Date are required.');
-        return;
+      toast.error("Title and Due Date are required.");
+      return;
+    }
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    if (due < today) {
+      toast.error("Due Date must be today or in the future.");
+      return;
     }
     onSave({ id: taskToEdit?.id, title, description, status, dueDate });
   };
@@ -49,10 +105,10 @@ const AddTaskModal = ({ isOpen, onClose, onSave, taskToEdit }) => {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-gray-300 mb-1">Status</label>
-              <select value={status} onChange={e => setStatus(e.target.value)} className="w-full p-2 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="todo">To Do</option>
-                <option value="in-progress">In Progress</option>
-                <option value="done">Done</option>
+              <select value={status} onChange={e => setStatus(Number(e.target.value))} className="w-full p-2 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="0" >To Do</option>
+                <option value="1">In Progress</option>
+                <option value="2">Done</option>
               </select>
             </div>
             <div>

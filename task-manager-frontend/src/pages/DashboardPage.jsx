@@ -5,6 +5,7 @@ import AddTaskModal from '../components/AddTaskModal';
 import { useAuth } from '../context/AuthContext';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const DashboardPage = () => {
     const { user } = useAuth();
@@ -15,60 +16,131 @@ const DashboardPage = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [sortBy, setSortBy] = useState('dueDate_asc');
 
-   
-    useEffect(() => {
-        const storedTasks = JSON.parse(localStorage.getItem(`tasks_${user.email}`)) || [];
-        setTasks(storedTasks);
+   useEffect(() => {
+    const fetchTasks = async () => {
+        try {
+        const token = localStorage.getItem("task-manager-token");
+
+        if (!token) {
+            console.warn("No auth token found.");
+            return;
+        }
+
+        const response = await axios.get("http://localhost:3000/api/tasks", {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            },
+        });
+
+        console.log("Fetched tasks:", response.data);
+
+        const mappedTasks = response.data.map(task => ({
+          id: task.tid,
+          title: task.tname,
+          description: task.tdesc,
+          status: task.status,
+          dueDate: task.dueDate,
+        }));
+
+        setTasks(mappedTasks);
+        } catch (error) {
+        console.error("Error fetching tasks:", error);
+        toast.error(error.response?.data?.message || "Failed to fetch tasks.");
+        }
+    };
+
+    fetchTasks();
     }, [user.email]);
 
    
-    const saveTasks = (newTasks) => {
-        setTasks(newTasks);
-        localStorage.setItem(`tasks_${user.email}`, JSON.stringify(newTasks));
-    };
-    
-  
-    const handleSaveTask = (task) => {
-        let newTasks;
-        if (task.id) { 
-            newTasks = tasks.map(t => t.id === task.id ? task : t);
-            toast.success('Task updated successfully!');
-        } else { 
-            newTasks = [...tasks, { ...task, id: Date.now() }];
-             toast.success('Task added successfully!');
-        }
-        saveTasks(newTasks);
-        setIsModalOpen(false);
-        setTaskToEdit(null);
-    };
+     const handleSaveTask = async (task) => {
+    const token = localStorage.getItem("task-manager-token");
+    try {
+      if (task.id) {
+        // Update existing task
+        await axios.put(`http://localhost:3000/api/tasks/${task.id}`, {
+          tname: task.title,
+          tdesc: task.description,
+          status: task.status,
+          dueDate: task.dueDate
+        }, { headers: { Authorization: `Bearer ${token}` }});
 
-    const handleDeleteTask = (taskId) => {
-        const newTasks = tasks.filter(t => t.id !== taskId);
-        saveTasks(newTasks);
-        toast.success('Task deleted!');
-    };
-    
-    const handleEditTask = (task) => {
-        setTaskToEdit(task);
-        setIsModalOpen(true);
-    };
+        setTasks(prev => prev.map(t => t.id === task.id ? task : t));
+        toast.success("Task updated successfully!");
+      } else {
+        // Create new task
+        const response = await axios.post("http://localhost:3000/api/tasks", {
+          tname: task.title,
+          tdesc: task.description,
+          status: task.status,
+          dueDate: task.dueDate
+        }, { headers: { Authorization: `Bearer ${token}` }});
 
-    const handleUpdateTaskStatus = (taskId, newStatus) => {
-        const newTasks = tasks.map(task => 
-            task.id === taskId ? { ...task, status: newStatus } : task
-        );
-        saveTasks(newTasks);
-    };
+        const newTask = {
+          id: response.data.tid,
+          title: response.data.tname,
+          description: response.data.tdesc,
+          status: response.data.status,
+          dueDate: response.data.dueDate
+        };
+
+        setTasks(prev => [...prev, newTask]);
+        toast.success("Task added successfully!");
+      }
+    } catch (error) {
+      console.error("Error saving task:", error);
+      toast.error(error.response?.data?.message || "Failed to save task.");
+    } finally {
+      setIsModalOpen(false);
+      setTaskToEdit(null);
+    }
+  };
+
+  // Delete task
+  const handleDeleteTask = async (taskId) => {
+    const token = localStorage.getItem("task-manager-token");
+    try {
+      await axios.delete(`http://localhost:3000/api/tasks/${taskId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setTasks(prev => prev.filter(t => t.id !== taskId));
+      toast.success("Task deleted!");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error(error.response?.data?.message || "Failed to delete task.");
+    }
+  };
+
+  // Update task status (on drag & drop)
+  const handleUpdateTaskStatus = async (taskId, newStatus) => {
+    const token = localStorage.getItem("task-manager-token");
+    try {
+      const task = tasks.find(t => t.id === taskId);
+      await axios.put(`http://localhost:3000/api/tasks/${taskId}`, {
+        tname: task.title,
+        tdesc: task.description,
+        status: newStatus,
+        dueDate: task.dueDate
+      }, { headers: { Authorization: `Bearer ${token}` }});
+
+      setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error(error.response?.data?.message || "Failed to update status.");
+    }
+  };
+
+  const handleEditTask = (task) => {
+    setTaskToEdit(task);
+    setIsModalOpen(true);
+  };
+
 
     const filteredAndSortedTasks = useMemo(() => {
         return tasks
             .filter(task => {
                 const searchLower = searchTerm.toLowerCase();
                 return task.title.toLowerCase().includes(searchLower) || task.description.toLowerCase().includes(searchLower);
-            })
-            .filter(task => { 
-                if (statusFilter === 'all') return true;
-                return task.status === statusFilter;
             })
             .sort((a, b) => { 
                 if (sortBy === 'dueDate_asc') {
@@ -77,7 +149,7 @@ const DashboardPage = () => {
                     return new Date(b.dueDate) - new Date(a.dueDate);
                 }
             });
-    }, [tasks, searchTerm, statusFilter, sortBy]);
+    }, [tasks, searchTerm, sortBy]);
 
 
     return (
@@ -102,7 +174,7 @@ const DashboardPage = () => {
                 </div>
                 <KanbanBoard 
                     tasks={filteredAndSortedTasks} 
-                    setTasks={saveTasks}
+                    setTasks={setTasks}
                     onEditTask={handleEditTask}
                     onDeleteTask={handleDeleteTask}
                     onUpdateStatus={handleUpdateTaskStatus}

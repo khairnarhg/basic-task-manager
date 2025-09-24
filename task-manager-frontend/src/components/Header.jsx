@@ -24,7 +24,7 @@ const Header = ({ searchTerm, setSearchTerm, statusFilter, setStatusFilter, sort
           </div>
 
        
-          <select 
+          {/* <select 
             value={statusFilter} 
             onChange={e => setStatusFilter(e.target.value)}
             className="p-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -33,7 +33,7 @@ const Header = ({ searchTerm, setSearchTerm, statusFilter, setStatusFilter, sort
             <option value="todo">To Do</option>
             <option value="in-progress">In Progress</option>
             <option value="done">Done</option>
-          </select>
+          </select> */}
 
         
           <select 
