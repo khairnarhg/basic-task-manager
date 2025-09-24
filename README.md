@@ -1,6 +1,6 @@
 # Task Management App
-Deployed link: https://basic-task-manager-omega.vercel.app/login
-A full-stack task management system with **JWT-based authentication**, user-specific tasks, and CRUD APIs.  
+-Deployed link: https://basic-task-manager-omega.vercel.app/login
+-A full-stack task management system with **JWT-based authentication**, user-specific tasks, and CRUD APIs.  
 
 ---
 
