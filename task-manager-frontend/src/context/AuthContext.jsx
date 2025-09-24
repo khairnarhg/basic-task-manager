@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+      //http://localhost:3000/api/auth/login
+      const response = await axios.post('https://basic-task-manager-0t1x.onrender.com/api/auth/login', { email, password });
 
       if (response.status < 200 || response.status >= 300) {
         toast.error(response.data?.message || 'Login failed. Please try again.');
@@ -36,14 +37,14 @@ export const AuthProvider = ({ children }) => {
    
       return true;
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
+      // toast.error(error.response?.data?.message || error.message);
       return false;
     }
   };
 
   const signup = async (name, email, password) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/signup', { name, email, password });
+      const response = await axios.post('https://basic-task-manager-0t1x.onrender.com/api/auth/signup', { name, email, password });
 
       if (response.status < 200 || response.status >= 300) {
         toast.error(response.data?.message || 'Signup failed. Please try again.');

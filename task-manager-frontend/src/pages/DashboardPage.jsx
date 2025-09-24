@@ -26,7 +26,7 @@ const DashboardPage = () => {
             return;
         }
 
-        const response = await axios.get("http://localhost:3000/api/tasks", {
+        const response = await axios.get("https://basic-task-manager-0t1x.onrender.com/api/tasks", {
             headers: {
             Authorization: `Bearer ${token}`,
             },
@@ -58,7 +58,7 @@ const DashboardPage = () => {
     try {
       if (task.id) {
    
-        await axios.put(`http://localhost:3000/api/tasks/${task.id}`, {
+        await axios.put(`https://basic-task-manager-0t1x.onrender.com/api/tasks/${task.id}`, {
           tname: task.title,
           tdesc: task.description,
           status: task.status,
@@ -69,7 +69,7 @@ const DashboardPage = () => {
         toast.success("Task updated successfully!");
       } else {
         
-        const response = await axios.post("http://localhost:3000/api/tasks", {
+        const response = await axios.post("https://basic-task-manager-0t1x.onrender.com/api/tasks", {
           tname: task.title,
           tdesc: task.description,
           status: task.status,
@@ -100,7 +100,7 @@ const DashboardPage = () => {
   const handleDeleteTask = async (taskId) => {
     const token = localStorage.getItem("task-manager-token");
     try {
-      await axios.delete(`http://localhost:3000/api/tasks/${taskId}`, {
+      await axios.delete(`https://basic-task-manager-0t1x.onrender.com/api/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTasks(prev => prev.filter(t => t.id !== taskId));
@@ -116,7 +116,7 @@ const DashboardPage = () => {
     const token = localStorage.getItem("task-manager-token");
     try {
       const task = tasks.find(t => t.id === taskId);
-      await axios.put(`http://localhost:3000/api/tasks/${taskId}`, {
+      await axios.put(`https://basic-task-manager-0t1x.onrender.com/api/tasks/${taskId}`, {
         tname: task.title,
         tdesc: task.description,
         status: newStatus,

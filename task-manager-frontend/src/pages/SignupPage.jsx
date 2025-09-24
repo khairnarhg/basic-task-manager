@@ -29,7 +29,7 @@ const SignupPage = () => {
     if(success) {
       toast.success('Account created successfully!');
     } else {
-      toast.error('Some error ocurred');
+      // toast.error('Some error ocurred');
     }
   };
 

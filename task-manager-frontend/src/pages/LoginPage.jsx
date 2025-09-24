@@ -9,12 +9,12 @@ const LoginPage = () => {
   const { login } = useAuth();
  
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       return toast.error('Please fill in all fields.');
     }
-    const success = login(email, password);
+    const success = await login(email, password);
     if (success) {
       toast.success('Logged in successfully!');
     } else {
