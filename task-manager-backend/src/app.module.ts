@@ -16,7 +16,7 @@ import { TasksModule } from './tasks/tasks.module';
       // username: process.env.DATABASE_USER,
       // password: process.env.DATABASE_PASSWORD,
       // database: process.env.DATABASE_NAME,
-      url: process.env.   ,
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       // eslint-disable-next-line prettier/prettier
       synchronize: true, 
