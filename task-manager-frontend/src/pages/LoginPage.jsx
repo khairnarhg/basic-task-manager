@@ -25,7 +25,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900">
+      <h2 className="text-5xl font-bold text-white mb-6 text-center">Task Manager</h2>
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-white mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit}>
