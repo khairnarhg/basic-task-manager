@@ -9,7 +9,7 @@
 ## 🚀 Tech Stack
 
 - **Backend**: [NestJS](https://nestjs.com/), [TypeORM](https://typeorm.io/), [JWT](https://jwt.io/), [Bcrypt](https://www.npmjs.com/package/bcrypt)  
-- **Frontend**: React + Vite
+- **Frontend**: React + Vite, Tailwind CSS
 - **Database**: PostgreSQL 
 - **Tools**: ESLint, Prettier  
 
